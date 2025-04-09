@@ -34,17 +34,32 @@ class ColaPrioridad:
     #Metodo para agregar un paciente a la cola segun gravedad y prioridad
     def agregar_paciente(self, paciente):
             nuevo_nodo = Nodo(paciente)
+            
             if self.inicio is None:
                 self.inicio = nuevo_nodo
             else:
-                if paciente.gravedad < self.inicio.paciente.gravedad:
+                actual = self.inicio
+                anterior = None
+
+                #Recorrer la lista para buscar la posicion correcta
+                while actual is not None:
+                    if paciente.gravedad < actual.paciente.gravedad:
+                        break
+                    elif paciente.gravedad == actual.paciente.gravedad:
+                        if paciente.prioridad < actual.paciente.prioridad:
+                            break
+                    anterior = actual
+                    actual = actual.siguiente
+                
+                #Insertar al inicio
+                if anterior is None:
                     nuevo_nodo.siguiente = self.inicio
                     self.inicio = nuevo_nodo
                 else:
-                    actual = self.inicio
-                    while actual.siguiente is not None and paciente.gravedad < actual.siguiente.paciente.gravedad:actual = actual.siguiente
-                    nuevo_nodo.siguiente = actual.siguiente
-                    actual.siguiente = nuevo_nodo
+                    nuevo_nodo.siguiente = actual
+                    anterior.siguiente = nuevo_nodo
+
+                
     #Metodo pasar al siguiente (imprimir y eliminar)
     def pasar_siguiente(self):
         if self.inicio is None:
@@ -52,7 +67,7 @@ class ColaPrioridad:
         else:
             paciente = self.inicio.paciente
             self.inicio = self.inicio.siguiente
-            print("Siguiente paciente: ",paciente.nombre," Edad: ",paciente.edad," Sintomas: ",paciente.sintomas," Gravedad: ",paciente.gravedad," Prioridad: " ,paciente.prioridad)
+            print("Siguiente paciente: ",paciente.nombre,", Edad: ",paciente.edad,", Sintomas: ",paciente.sintomas,", Gravedad: ",paciente.gravedad,", Prioridad: " ,paciente.prioridad)
             print("------ Paciente atendido ------")
             return paciente
         
